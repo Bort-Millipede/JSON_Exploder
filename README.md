@@ -10,7 +10,8 @@ OPTIONS:
 	--outfile[=FILENAME]: save output to file. If FILENAME is not specified, a randomized filename will be used
 	-r: NOT IMPLEMENTED YET!
 	-p: Generate a "pyramid list" payload: max_indices first level, max_indices-1 all subsequent levels until top level with single string value
-	-d: NOT IMPLEMENTED YET!
-	-f: force "unsafe" operations (ex. "pyramid list" payload with more than max_indices>5)
+	-d: Generate a "reverse pyramid list" payload: 1 index first level, n+1 all subsequent levels until top level with max_indices string values
+	-f: force "unsafe" operations (ex. "pyramid list" payload with max_indices>5)
+		NOTE: setting -f option will automatically set --outfile option!
 ```
 

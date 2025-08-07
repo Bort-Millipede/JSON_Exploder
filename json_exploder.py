@@ -31,8 +31,6 @@ def normal_explode(max_indices):
 	return out_json
 
 def pyramid_explode(max_indices):
-	#out_json = "%s\"%s\"]"%('['*max_indices,rand_val(max_indices))
-	
 	out_json = '["RANDHERE"]'
 	i=2
 	while i<=max_indices:
@@ -50,14 +48,45 @@ def pyramid_explode(max_indices):
 	return out_json
 
 def reverse_pyramid_explode(max_indices):
-	out_json = 'NOT IMPLEMENTED YET!'
+	"""out_json = '"RANDHERE",'*max_indices
+	out_json = out_json.rstrip(',')
+	i=2
+	while i<=max_indices:
+		j=1
+		while j<=i:
+			out_json = "%s,"%(out_json)*j
+			out_json = out_json.rstrip(',')
+			out_json = "[%s]"%(out_json)
+			j+=1
+		i+=1"""
+	
+	out_json = reverse_pyramid_recurse("",max_indices,max_indices)
+	out_json = "[%s]"%(out_json)
+	
+	while out_json.find("RANDHERE")!=-1:
+		out_json = out_json.replace("RANDHERE",rand_val(max_indices*random.randint(1,3)),1)
+	
 	return out_json
+
+def reverse_pyramid_recurse(out_json,max_indices,counter):
+	if max_indices==counter:
+		out_json = '"RANDHERE",'*counter
+		out_json = out_json.rstrip(',')
+		out_json = "[%s]"%(out_json)
+	if counter>=2:
+		out_json = '%s,'%(out_json)*counter
+		out_json = out_json.rstrip(',')
+		out_json = "[%s]"%(out_json)
+		return reverse_pyramid_recurse(out_json,max_indices,counter-1)
+	else:
+		return out_json
 
 def usage():
 	sys.stderr.write("\nUsage: %s [OPTIONS] max_indices\n"%(sys.argv[0]))
 	sys.stderr.write("OPTIONS:\n\t--outfile[=FILENAME]: save output to file. If FILENAME is not specified, a randomized filename will be used\n")
 	sys.stderr.write("\t-r: NOT IMPLEMENTED YET!\n\t-p: Generate a \"pyramid list\" payload: max_indices first level, max_indices-1 all subsequent levels until top level with single string value\n")
-	sys.stderr.write("\t-d: NOT IMPLEMENTED YET!\n\t-f: force \"unsafe\" operations (ex. \"pyramid list\" payload with more than max_indices>5)\n")
+	sys.stderr.write("\t-d: Generate a \"reverse pyramid list\" payload: 1 index first level, n+1 all subsequent levels until top level with max_indices string values\n")
+	sys.stderr.write("\t-f: force \"unsafe\" operations (ex. \"pyramid list\" payload with max_indices>5)\n\t\tNOTE: setting -f option will automatically set --outfile option!\n")
 
 if __name__ == '__main__':
 	if len(sys.argv)<2:
@@ -90,6 +119,8 @@ if __name__ == '__main__':
 			reverse_pyramid = True
 		elif arg_split[0] == "-f":
 			unsafe = True
+			if out_filename == None: out_filename = "exploded_%i.json"%(int(time.time()))
+				
 		
 		i+=1
 	
