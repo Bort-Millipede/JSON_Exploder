@@ -5,20 +5,67 @@ import random
 import string
 import time
 
-def rand_val(max_length):
-	return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1))
+def rand_val(max_length,random_type=False):
+	ret_val = None
+	
+	if random_type:
+		type_list = [False,1,0.1,"",[],None,{}]
+		t = type(random.choice(type_list))
+		if t == type(False):
+			ret_val = str(bool(random.randint(0,2))).lower()
+		elif t == type(1):
+			ret_val = str(random.randint(-2147483648,2147483647))
+		elif t == type(0.1):
+			sci_not = bool(random.randint(0,2))
+			if sci_not:
+				ret_val = "%e"%(random.uniform(-2147483648,2147483647))
+			else:
+				ret_val = str(random.uniform(-2147483648,2147483647))
+		elif t == type(""):
+			ret_val = "\"%s\""%(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1)))
+		elif t == type([]):
+			ret_val = "[]"
+		elif t == type(None):
+			ret_val = "null"
+		elif t == type({}):
+			random_dict = {}
+			for i in range(max_length*random.randint(1,3)):
+				key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1))
+				val_type = type(random.choice(type_list))
+				value = None
+				if val_type == type(False):
+					value = bool(random.randint(0,2))
+				elif val_type == type(1):
+					value = random.randint(-2147483648,2147483647)
+				elif val_type == type(0.1):
+					value = random.uniform(-2147483648,2147483647)
+				elif val_type == type(""):
+					value = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1))
+				elif val_type == type([]):
+					value = []
+				elif val_type == type(None):
+					value = None
+				elif val_type == type({}):
+					value = {}
+				random_dict[key] = value
+			ret_val = str(random_dict)
+			ret_val = ret_val.replace(" ","",-1).replace("None","null",-1).replace("False","false",-1).replace("True","true",-1).replace("\'","\"",-1)
+	else:
+		ret_val = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1))
+	
+	return ret_val
 
-def normal_explode(max_indices,repeat_rand):
+def normal_explode(max_indices,repeat_rand,rand_types):
 	out_json = ''
-	rand = rand_val(max_indices*random.randint(1,3))
+	rand = rand_val(max_indices*random.randint(1,3),rand_types)
 	
 	i=0
 	while i<max_indices:
 		i_depth = random.randint(1,max_indices+1)
-		index = '%s"'%('['*i_depth)
+		index = '%s'%('['*i_depth)
 		index += rand
-		if not repeat_rand: rand = rand_val(max_indices*random.randint(1,3))
-		index += '"%s,'%(']'*i_depth)
+		if not repeat_rand: rand = rand_val(max_indices*random.randint(1,3),rand_types)
+		index += '%s,'%(']'*i_depth)
 		out_json += index
 		i+=1
 	
@@ -27,7 +74,7 @@ def normal_explode(max_indices,repeat_rand):
 	
 	return out_json
 
-def pyramid_explode(max_indices,repeat_rand):
+def pyramid_explode(max_indices,repeat_rand,rand_types):
 	out_json = '["RANDHERE"]'
 	i=2
 	while i<=max_indices:
@@ -39,17 +86,17 @@ def pyramid_explode(max_indices,repeat_rand):
 			j+=1
 		i+=1
 	
-	while out_json.find("RANDHERE")!=-1:
-		out_json = out_json.replace("RANDHERE",rand_val(max_indices*random.randint(1,3)),-1 if repeat_rand else 1)
+	while out_json.find("\"RANDHERE\"")!=-1:
+		out_json = out_json.replace("\"RANDHERE\"","%s"%(rand_val(max_indices*random.randint(1,3),rand_types)),-1 if repeat_rand else 1)
 	
 	return out_json
 
-def reverse_pyramid_explode(max_indices,repeat_rand):
+def reverse_pyramid_explode(max_indices,repeat_rand,rand_types):
 	out_json = reverse_pyramid_recurse("",max_indices,max_indices)
 	out_json = "[%s]"%(out_json)
 	
-	while out_json.find("RANDHERE")!=-1:
-		out_json = out_json.replace("RANDHERE",rand_val(max_indices*random.randint(1,3)),-1 if repeat_rand else 1)
+	while out_json.find("\"RANDHERE\"")!=-1:
+		out_json = out_json.replace("\"RANDHERE\"","%s"%(rand_val(max_indices*random.randint(1,3),rand_types)),-1 if repeat_rand else 1)
 	
 	return out_json
 
@@ -74,11 +121,10 @@ def usage():
 	sys.stderr.write("\t--reverse-pyramid: Generate a \"reverse pyramid list\" payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices string values\n")
 	sys.stderr.write("\t--repeat-random: use same random value for all indices in payload\n")
 	sys.stderr.write("\t--fully-random: (Default) use different random value for all indices in payload\n")
-	sys.stderr.write("\t--random-type: !!NOT IMPLEMENTED YET!! fill in indices with random type(s) !!NOT IMPLEMENTED YET!!\n")
+	sys.stderr.write("\t--random-types: fill in indices with random type(s)\n")
 	sys.stderr.write("\t-f: force \"unsafe\" operations (ex. \"pyramid list\" payload with max_indices>5)\n\t\tNOTE: setting -f option will automatically set --outfile option!\n")
 	sys.stderr.write("\t--append=DATA: add DATA (must be valid JSON data: this is not validated) as final index in final nested level.\n")
-	sys.stderr.write("\t--append-file=FILENAME: add contents of FILENAME (FILENAME must contain valid JSON data: this is not validated) as final index in final nested level.\n")
-	sys.stderr.write("\n")
+	sys.stderr.write("\t--append-file=FILENAME: add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated) as final index in final nested level.\n\n")
 
 if __name__ == '__main__':
 	if len(sys.argv)<2:
@@ -125,7 +171,7 @@ if __name__ == '__main__':
 			repeat_rand = True
 		elif arg_split[0] == '--fully-random':
 			repeat_rand = False
-		elif arg_split[0] == "--random-type":
+		elif arg_split[0] == "--random-types":
 			rand_types = True
 		elif arg_split[0] == "-f":
 			unsafe = True
@@ -176,11 +222,11 @@ if __name__ == '__main__':
 	
 	out_json = ''
 	if pyramid:
-		out_json = pyramid_explode(max_indices,repeat_rand)
+		out_json = pyramid_explode(max_indices,repeat_rand,rand_types)
 	elif reverse_pyramid:
-		out_json = reverse_pyramid_explode(max_indices,repeat_rand)
+		out_json = reverse_pyramid_explode(max_indices,repeat_rand,rand_types)
 	else:
-		out_json = normal_explode(max_indices,repeat_rand)
+		out_json = normal_explode(max_indices,repeat_rand,rand_types)
 	
 	if append:
 		if append_file!=None:
@@ -192,8 +238,8 @@ if __name__ == '__main__':
 		while last_index==']':
 			i-=1
 			last_index = out_json[i]
-		last_index=i+1
-		out_json = "%s,%s%s"%(out_json[0:last_index],append_data,out_json[last_index:])
+		i+=1
+		out_json = "%s%s%s%s"%(out_json[0:i],'' if last_index=='[' else ',',append_data,out_json[i:])
 	
 	if out_filename != None:
 		outfile = None
