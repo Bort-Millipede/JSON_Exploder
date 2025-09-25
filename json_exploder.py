@@ -51,7 +51,7 @@ def rand_val(max_length,random_type=False):
 			ret_val = str(random_dict)
 			ret_val = ret_val.replace(" ","",-1).replace("None","null",-1).replace("False","false",-1).replace("True","true",-1).replace("\'","\"",-1)
 	else:
-		ret_val = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1))
+		ret_val = "\"%s\""%(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(1,max_length+1)))
 	
 	return ret_val
 
@@ -244,7 +244,7 @@ if __name__ == '__main__':
 	if out_filename != None:
 		outfile = None
 		try:
-			open(out_filename,'w')
+			outfile = open(out_filename,'w')
 			outfile.write(out_json)
 			outfile.close()
 			print("Output saved to %s"%(out_filename))
