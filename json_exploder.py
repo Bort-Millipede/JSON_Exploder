@@ -116,15 +116,15 @@ def reverse_pyramid_recurse(out_json,max_indices,counter):
 def usage():
 	sys.stderr.write("\nUsage: %s [OPTIONS] max_indices\n"%(sys.argv[0]))
 	sys.stderr.write("OPTIONS:\n\t--outfile[=FILENAME]: save output to file. If FILENAME is not specified, a randomized filename will be used\n")
-	sys.stderr.write("\t--normal: (Default) Generate a \"normal\" list payload: max_indices number of indices, with each index having a single string value deeply nested within a random-leveled (1-max_indices) list\n")
-	sys.stderr.write("\t--pyramid: Generate a \"pyramid list\" payload: max_indices first level, max_indices-1 all subsequent nested levels until top level with single string value\n")
-	sys.stderr.write("\t--reverse-pyramid: Generate a \"reverse pyramid list\" payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices string values\n")
+	sys.stderr.write("\t--normal: (Default) Generate a \"normal\" list payload: max_indices number of indices, with each index having a single randomized value deeply nested within a random-leveled (1-max_indices) list\n")
+	sys.stderr.write("\t--pyramid: Generate a \"pyramid\" list payload: max_indices first level, max_indices-1 all subsequent nested levels until top level with single randomized value\n")
+	sys.stderr.write("\t--reverse-pyramid: Generate a \"reverse pyramid\" list payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices randomized values\n")
 	sys.stderr.write("\t--repeat-random: use same random value for all indices in payload\n")
 	sys.stderr.write("\t--fully-random: (Default) use different random value for all indices in payload\n")
 	sys.stderr.write("\t--random-types: fill in indices with random type(s)\n")
 	sys.stderr.write("\t-f: force \"unsafe\" operations (ex. \"pyramid list\" payload with max_indices>5)\n\t\tNOTE: setting -f option will automatically set --outfile option!\n")
-	sys.stderr.write("\t--append=DATA: add DATA (must be valid JSON data: this is not validated) as final index in final nested level.\n")
-	sys.stderr.write("\t--append-file=FILENAME: add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated) as final index in final nested level.\n\n")
+	sys.stderr.write("\t--append=DATA: add DATA (must be valid JSON data: this is not validated!) as final index in final nested level.\n")
+	sys.stderr.write("\t--append-file=FILENAME: add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated!) as final index in final nested level.\n\n")
 
 if __name__ == '__main__':
 	if len(sys.argv)<2:
