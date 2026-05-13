@@ -63,12 +63,14 @@ A nested listed with 1 index on the first level, and a +1 increased index count 
 Usage: json_exploder.py [OPTIONS] max_indices
 OPTIONS:
 	--outfile[=FILENAME]: save output to file. If FILENAME is not specified, a randomized filename will be used
-	--normal: (Default) Generate a "normal" list payload: max_indices number of indices, with each index having a single randomized value deeply nested within a random-leveled (1-max_indices) list
+	--normal: (Default) Generate a "normal" list payload: max_indices number of indices, with each index having a single randomized value deeply nested within a random-leveled (up to max_indices+1) list
 	--pyramid: Generate a "pyramid" list payload: max_indices first level, max_indices-1 all subsequent nested levels until top level with single randomized value
 	--reverse-pyramid: Generate a "reverse pyramid" list payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices randomized values
 	--repeat-random: use same random value for all indices in payload
 	--fully-random: (Default) use different random value for all indices in payload
 	--random-types: fill in indices with random type(s)
+	--full-charset-strings: randomly generate strings (with escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters
+	--full-charset-all: randomly generate strings (with escaping) AND strings within objects (without escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters
 	-f: force "unsafe" operations (ex. "pyramid list" payload with max_indices>5)
 		NOTE: setting -f option will automatically set --outfile option!
 	--append=DATA: add DATA (must be valid JSON data: this is not validated!) as final index in final nested level.
