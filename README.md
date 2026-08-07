@@ -2,7 +2,7 @@
 
 JSON list payload generator targeting JSON parsers. Generated payloads are intent on causing excessive consumption of resources and/or error conditions when processed by JSON parsers.
 
-Because JSON lists are not explicitly typed and can also contain lists themselves, processing complicated but syntactically-correct JSON lists can easily cause excessive resource consumption and/or error conditions when the parse does not perform type checking on inputted data. This payload generator can be helpful in identifying such conditions.
+Because JSON lists are not explicitly typed and can also contain lists themselves, processing complicated but syntactically-correct JSON lists can easily cause excessive resource consumption and/or error conditions when the parser does not perform type checking on inputted data. This payload generator can be helpful in identifying such conditions.
 
 ## Payload Types
 
@@ -62,22 +62,34 @@ A nested listed with 1 index on the first level, and a +1 increased index count 
 ```
 Usage: json_exploder.py [OPTIONS] max_indices
 OPTIONS:
-	--outfile[=FILENAME]: save output to file. If FILENAME is not specified, a randomized filename will be used
-	--normal: (Default) Generate a "normal" list payload: max_indices number of indices, with each index having a single randomized value deeply nested within a random-leveled (up to max_indices+1) list
-	--pyramid: Generate a "pyramid" list payload: max_indices first level, max_indices-1 all subsequent nested levels until top level with single randomized value
-	--reverse-pyramid: Generate a "reverse pyramid" list payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices randomized values
-	--repeat-random: use same random value for all indices in payload
-	--fully-random: (Default) use different random value for all indices in payload
-	--random-types: fill in indices with random type(s)
-	--full-charset-strings: randomly generate strings (with escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters
-	--full-charset-all: randomly generate strings (with escaping) AND strings within objects (without escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters
-	-f: force "unsafe" operations (ex. "pyramid list" payload with max_indices>5)
-		NOTE: setting -f option will automatically set --outfile option!
-	--append=DATA: add DATA (must be valid JSON data: this is not validated!) as final index in final nested level.
-	--append-file=FILENAME: add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated!) as final index in final nested level.
+	--outfile[=FILENAME]: Save output to file. If FILENAME is not specified, a randomized filename will be used.
+	--normal: (Default) Generate a "normal" list payload: max_indices number of indices, with each index having a single randomized value deeply nested within a random-leveled (up to max_indices+1) list.
+	--pyramid: Generate a "pyramid" list payload: max_indices first level, n-1 all subsequent nested levels until top level with single randomized value.
+	--reverse-pyramid: Generate a "reverse pyramid" list payload: 1 index first level, n+1 all subsequent nested levels until top level with max_indices randomized values.
+	--repeat-random: use same random value for all indices in payload.
+	--fully-random: (Default) Use different random values for all indices in payload.
+	--random-types: Fill in indices with random type(s).
+	--full-charset-strings: Randomly generate strings (with escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters.
+	--full-charset-all: Randomly generate strings (with escaping) AND strings within objects (without Unicode character escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and Unicode (0x0100-0xFFFF) characters.
+	-f: Force "unsafe" operations (ex. "pyramid list" payload with max_indices>4)
+		NOTE: setting -f option will automatically set --outfile option, as payload sizes can increase VERY rapidly!
+	--append=DATA: Add DATA (must be valid JSON data: this is not validated!) as final index in final nested level.
+	--append-file=FILENAME: Add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated!) as final index in final nested level.
 ```
 
 ### Options 
 
-TODO
+* ```--outfile[=FILENAME]```: Save output to file. If FILENAME is not specified, a randomized filename will be used.
+* ```--normal```: (Default) Generate a "normal" list payload with ```max_indices``` number of indices, with each index having a single randomized value deeply nested within a random-leveled (up to ```max_indices+1```) list.
+* ```--pyramid```: Generate a "pyramid" list payload with max_indices indices on the first level, and ```n-1``` indices on all subsequent nested levels until the top level contains a single randomized value.
+* ```--reverse-pyramid```: Generate a "reverse pyramid" list payload with 1 index on the first level, and ```n+1``` all subsequent nested levels until the top level contains ```max_indices``` randomized values.
+* ```--repeat-random```: Use identical random values for all indices in payload.
+* ```--fully-random```: (Default) Use different random values for all indices in payload.
+* ```--random-types```: Fill in indices with random type(s).
+* ```--full-charset-strings``: Randomly generate strings (with escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and unicode (0x0100-0xFFFF) characters.
+* ```--full-charset-all```: Randomly generate strings (with escaping) AND strings within objects (without Unicode character escaping) including escaped low ASCII (0x00-0x1f), high ASCII (0x7F-0xFF), and Unicode (0x0100-0xFFFF) characters.
+* ```-f```: Force "unsafe" operations (ex. "pyramid list" payload with max_indices>4). Note that setting the ```-f``` option will automatically set the ```--outfile``` option, as payload sizes can increase VERY rapidly!
+* ```--append=DATA```: Add DATA (must be valid JSON data: this is not validated!) as final index in final nested level.
+* ```--append-file=FILENAME```: Add FILENAME file contents (FILENAME must contain valid JSON data: this is not validated!) as final index in final nested level.
+
 
